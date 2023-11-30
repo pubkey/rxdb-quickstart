@@ -9,9 +9,11 @@ import {
 
 import './style.css';
 
-async function start() {
+(async () => {
     const database = await databasePromise;
-    await updateDisplayUrl();
+
+    // update url in description text
+    ensureNotFalsy(document.getElementById('copy-url')).innerHTML = window.location.href;
 
     // render reactive todo list
     const $todoList = ensureNotFalsy(document.getElementById('todo-list'));
@@ -43,39 +45,35 @@ async function start() {
     }
 
     // event: clear completed
-    const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed')) as HTMLButtonElement;
+    const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed'));
     $clearCompletedButton.onclick = () => database.todos.find({
         selector: {
             state: 'done'
         }
     }).remove()
-}
-
-
-
+})();
 
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
 
     const $liElement = document.createElement('li');
-    $liElement.setAttribute('data-id', todo.id);
-
     const $viewDiv = document.createElement('div');
-    $liElement.append($viewDiv);
-
     const $checkbox = document.createElement('input');
+    const $label = document.createElement('label');
+    const $deleteButton = document.createElement('button');
+    $liElement.append($viewDiv);
     $viewDiv.append($checkbox);
-    $checkbox.type = 'checkbox';
-    $checkbox.classList.add('toggle');
+    $viewDiv.append($label);
+    $viewDiv.append($deleteButton);
 
     // event: toggle todo state
     $checkbox.onclick = () => todo.incrementalPatch({
         state: todo.state === 'done' ? 'open' : 'done',
         lastChange: Date.now()
     });
-    
-    const $label = document.createElement('label');
-    
+    $checkbox.type = 'checkbox';
+    $checkbox.classList.add('toggle');
+
     // event: change todo name
     $label.contentEditable = 'true';
     $label.onkeyup = async (ev) => {
@@ -84,25 +82,16 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
             await todo.incrementalPatch({ name: newName, lastChange: Date.now() });
         }
     }
-    $viewDiv.append($label);
     $label.innerHTML = escapeForHTML(todo.name);
 
-    const $deleteButton = document.createElement('button');
-    $viewDiv.append($deleteButton);
+    // event: delete todo
     $deleteButton.classList.add('destroy');
     $deleteButton.onclick = () => todo.remove();
 
     if (todo.state === 'done') {
-        $checkbox.checked = true;
         $liElement.classList.add('completed');
+        $checkbox.checked = true;
     }
 
     return $liElement;
 }
-
-function updateDisplayUrl() {
-    ensureNotFalsy(document.getElementById('copy-url')).innerHTML = window.location.href;
-}
-
-
-start();

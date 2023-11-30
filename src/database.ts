@@ -28,8 +28,13 @@ export type TodoDocType = {
 export type RxTodoDocument = RxDocument<TodoDocType>;
 
 export const databasePromise = (async () => {
-    const roomId = getRoomId();
+    const roomId = window.location.hash;
+    if (!roomId || roomId.length < 5) {
+        window.location.hash = randomCouchString(12);
+        window.location.reload();
+    }
     const roomHash = await defaultHashSha256(roomId);
+
     const database = await createRxDatabase<{
         todos: RxCollection<TodoDocType, {}>
     }>({
@@ -38,7 +43,6 @@ export const databasePromise = (async () => {
             storage: getRxStorageDexie()
         })
     });
-
     await database.addCollections({
         todos: {
             schema: {
@@ -78,33 +82,23 @@ export const databasePromise = (async () => {
     });
 
     // start p2p replication
-    const replicatioState = await replicateWebRTC({
+    replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
         topic: roomHash.substring(0, 10),
         secret: 'lol',
         pull: {},
         push: {}
-    });
-    replicatioState.error$.subscribe((err: any) => {
-        console.log('replication error:');
-        console.dir(err);
-    });
-    replicatioState.peerStates$.subscribe(s => {
-        console.log('new peer states:');
-        console.dir(s);
+    }).then(replicationState => {
+        replicationState.error$.subscribe((err: any) => {
+            console.log('replication error:');
+            console.dir(err);
+        });
+        replicationState.peerStates$.subscribe(s => {
+            console.log('new peer states:');
+            console.dir(s);
+        });
     });
 
     return database;
 })();
-
-
-export function getRoomId(): string {
-    let hash = window.location.hash;
-    if (!hash || hash.length < 5) {
-        hash = randomCouchString(12);
-        window.location.hash = hash;
-        window.location.reload();
-    }
-    return hash;
-}
