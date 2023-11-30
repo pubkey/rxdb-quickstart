@@ -6,7 +6,6 @@ import {
     RxTodoDocument,
     databasePromise
 } from './database.js';
-
 import './style.css';
 
 (async () => {
@@ -50,7 +49,7 @@ import './style.css';
         selector: {
             state: 'done'
         }
-    }).remove()
+    }).remove();
 })();
 
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {

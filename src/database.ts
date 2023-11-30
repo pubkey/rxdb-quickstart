@@ -26,7 +26,6 @@ export type TodoDocType = {
     lastChange: number;
 }
 export type RxTodoDocument = RxDocument<TodoDocType>;
-
 export const databasePromise = (async () => {
     const roomId = window.location.hash;
     if (!roomId || roomId.length < 5) {
@@ -34,7 +33,6 @@ export const databasePromise = (async () => {
         window.location.reload();
     }
     const roomHash = await defaultHashSha256(roomId);
-
     const database = await createRxDatabase<{
         todos: RxCollection<TodoDocType, {}>
     }>({
@@ -80,8 +78,6 @@ export const databasePromise = (async () => {
             }
         }
     });
-
-    // start p2p replication
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
@@ -99,6 +95,5 @@ export const databasePromise = (async () => {
             console.dir(s);
         });
     });
-
     return database;
 })();
