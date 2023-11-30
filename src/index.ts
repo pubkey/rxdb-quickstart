@@ -11,7 +11,6 @@ import './style.css';
 
 async function start() {
     const database = await databasePromise;
-    await addEventHandlers();
     await updateDisplayUrl();
 
     // render reactive todo list
@@ -25,13 +24,8 @@ async function start() {
         $todoList.innerHTML = '';
         todos.forEach(todo => $todoList.append(getHtmlByTodo(todo)));
     });
-}
 
-
-async function addEventHandlers() {
-    const database = await databasePromise;
-
-    // add todo
+    // event: add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
     $insertInput.onkeydown = async (event) => {
         if (
@@ -48,16 +42,16 @@ async function addEventHandlers() {
         }
     }
 
-    // clear completed
+    // event: clear completed
     const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed')) as HTMLButtonElement;
-    $clearCompletedButton.onclick = async () => {
-        await database.todos.find({
-            selector: {
-                state: 'done'
-            }
-        }).remove();
-    }
+    $clearCompletedButton.onclick = () => database.todos.find({
+        selector: {
+            state: 'done'
+        }
+    }).remove()
 }
+
+
 
 
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
@@ -73,17 +67,21 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     $viewDiv.append($checkbox);
     $checkbox.type = 'checkbox';
     $checkbox.classList.add('toggle');
-    $checkbox.onclick = () => {
-        const newState = todo.state === 'done' ? 'open' : 'done';
-        todo.incrementalPatch({ state: newState, lastChange: Date.now() });
-    }
 
+    // event: toggle todo state
+    $checkbox.onclick = () => todo.incrementalPatch({
+        state: todo.state === 'done' ? 'open' : 'done',
+        lastChange: Date.now()
+    });
+    
     const $label = document.createElement('label');
+    
+    // event: change todo name
     $label.contentEditable = 'true';
-    $label.onkeyup = (ev) => {
+    $label.onkeyup = async (ev) => {
         if (ev.code === 'Enter') {
             const newName = $label.innerHTML.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
-            todo.incrementalPatch({ name: newName, lastChange: Date.now() });
+            await todo.incrementalPatch({ name: newName, lastChange: Date.now() });
         }
     }
     $viewDiv.append($label);

@@ -77,26 +77,23 @@ export const databasePromise = (async () => {
         }
     });
 
-    // start p2p replication for all collections
-    Object.values(database.collections).forEach(async (collection) => {
-        const topic = (await defaultHashSha256('rxdb-todo-' + collection.name + roomId)).substring(0, 10);
-        const replicatioState = await replicateWebRTC({
-            collection,
-            connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
-            topic: topic,
-            secret: 'lol',
-            pull: {},
-            push: {}
-        });
-        replicatioState.error$.subscribe((err: any) => {
-            console.log('replication error:');
-            console.dir(err);
-        });
-        replicatioState.peerStates$.subscribe(s => {
-            console.log('new peer states:');
-            console.dir(s);
-        });
-    })
+    // start p2p replication
+    const replicatioState = await replicateWebRTC({
+        collection: database.todos,
+        connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
+        topic: roomHash.substring(0, 10),
+        secret: 'lol',
+        pull: {},
+        push: {}
+    });
+    replicatioState.error$.subscribe((err: any) => {
+        console.log('replication error:');
+        console.dir(err);
+    });
+    replicatioState.peerStates$.subscribe(s => {
+        console.log('new peer states:');
+        console.dir(s);
+    });
 
     return database;
 })();
