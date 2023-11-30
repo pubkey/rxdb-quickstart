@@ -1,0 +1,63 @@
+<!doctype html>
+<html
+    lang="en"
+    data-framework="es6"
+>
+
+<head>
+    <meta charset="utf-8">
+    <title>Vanilla ES6 • TodoMVC</title>
+</head>
+
+<body>
+    <section class="todoapp">
+        <header class="header">
+            <h1>todos</h1>
+            <input
+                id="insert-todo"
+                class="new-todo"
+                placeholder="What needs to be done?"
+                autofocus
+            >
+        </header>
+        <section class="main">
+            <input
+                id="toggle-all"
+                class="toggle-all"
+                type="checkbox"
+            >
+            <label for="toggle-all">Mark all as complete</label>
+            <ul
+                class="todo-list"
+                id="todo-list"
+            >
+
+            </ul>
+            <footer class="footer">
+                <span class="todo-count"></span>
+                <ul class="filters">
+                    <li>
+                        <a
+                            class="selected"
+                        >All</a>
+                    </li>
+                    <!-- <li>
+                        <a>Completed</a>
+                    </li> -->
+                </ul>
+                <button
+                    class="clear-completed"
+                    id="clear-completed"
+                >Clear completed</button>
+            </footer>
+        </section>
+    </section>
+    <footer class="info">
+        <p>Double-click to edit a todo</p>
+        <p>Written by <a href="http://twitter.com/lukeed05">Luke Edwards</a></p>
+        <p>Refactored by <a href="https://github.com/xorgy">Aaron Muir Hamilton</a></p>
+        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+    </footer>
+</body>
+
+</html>

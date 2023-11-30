@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "statusCheckVerify": true,
+  "ignoreDeps": [],
+  "automerge": true,
+  "major": {
+    "automerge": true
+  },
+  "ignorePaths": [],
+  "rebaseStalePrs": true,
+  "prConcurrentLimit": 6,
+  "prHourlyLimit": 2,
+  "dependencyDashboard": false
+}
