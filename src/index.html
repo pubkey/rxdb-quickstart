@@ -10,9 +10,31 @@
 </head>
 
 <body>
+
+    <span id="forkongithub"><a
+            href="https://github.com/pubkey/rxdb-quickstart"
+            target="_blank"
+        >Fork me on GitHub</a></span>
+
     <section class="todoapp">
         <header class="header">
-            <h1>todos</h1>
+            <h1>p2p todos</h1>
+            <p class="description">
+                This is a local first todo app that stores data locally with <a
+                    href="https://rxdb.info/quickstart.html"
+                    target="_blank"
+                >RxDB</a> and
+                replicates it <a
+                    href="https://rxdb.info/replication-p2p.html"
+                    target="_blank"
+                >P2P with WebRTC</a> to other devices without sending
+                the data
+                throught any central server.
+
+                Open this url in another browser/device to test the replication: <br />
+                <code id="copy-url"></code>
+            </p>
+            <hr>
             <input
                 id="insert-todo"
                 class="new-todo"
@@ -54,7 +76,7 @@
         <!-- <p>Double-click to edit a todo</p> -->
         <p>Written by <a href="http://twitter.com/lukeed05">Luke Edwards</a></p>
         <p>Refactored by <a href="https://github.com/xorgy">Aaron Muir Hamilton</a></p>
-        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+        <p><a href="https://rxdb.info">Powered by RxDB</a></p>
     </footer>
 </body>
 

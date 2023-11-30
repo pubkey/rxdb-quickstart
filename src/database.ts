@@ -2,7 +2,9 @@ import {
     RxCollection,
     createRxDatabase,
     defaultHashSha256,
-    addRxPlugin
+    addRxPlugin,
+    randomCouchString,
+    RxDocument
 } from 'rxdb/plugins/core';
 import {
     getRxStorageDexie
@@ -16,11 +18,16 @@ import {
 } from 'rxdb/plugins/validate-ajv';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 addRxPlugin(RxDBDevModePlugin);
-import { getRoomId } from './room.js';
-import { TodoDocType, todoSchema } from './todo.schema.js';
-import { add as addUnload } from 'unload';
 
-let dbPromise = (async () => {
+export type TodoDocType = {
+    id: string;
+    name: string;
+    state: 'open' | 'done';
+    lastChange: number;
+}
+export type RxTodoDocument = RxDocument<TodoDocType>;
+
+export const databasePromise = (async () => {
     const roomId = getRoomId();
     const roomHash = await defaultHashSha256(roomId);
     const database = await createRxDatabase<{
@@ -34,7 +41,39 @@ let dbPromise = (async () => {
 
     await database.addCollections({
         todos: {
-            schema: todoSchema
+            schema: {
+                version: 0,
+                primaryKey: 'id',
+                type: 'object',
+                properties: {
+                    id: {
+                        type: 'string',
+                        maxLength: 20
+                    },
+                    name: {
+                        type: 'string'
+                    },
+                    state: {
+                        type: 'string',
+                        enum: [
+                            'open',
+                            'done'
+                        ],
+                        maxLength: 10
+                    },
+                    lastChange: {
+                        type: 'number',
+                        minimum: 1701307494132,
+                        maximum: 2701307494132,
+                        multipleOf: 1
+                    }
+                },
+                required: ['id', 'name', 'state', 'lastChange'],
+                indexes: [
+                    'state',
+                    ['state', 'lastChange']
+                ]
+            }
         }
     });
 
@@ -57,14 +96,18 @@ let dbPromise = (async () => {
             console.log('new peer states:');
             console.dir(s);
         });
-        addUnload(() => replicatioState.cancel());
     })
 
     return database;
 })();
 
 
-
-export function getDatabase() {
-    return dbPromise;
+export function getRoomId(): string {
+    let hash = window.location.hash;
+    if (!hash || hash.length < 5) {
+        hash = randomCouchString(12);
+        window.location.hash = hash;
+        window.location.reload();
+    }
+    return hash;
 }

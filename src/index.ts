@@ -2,17 +2,17 @@ import {
     ensureNotFalsy,
     randomCouchString
 } from 'rxdb/plugins/core';
-import { getDatabase } from './database.js';
+import {
+    RxTodoDocument,
+    databasePromise
+} from './database.js';
 
-import "./style.css";
-import { escapeForHTML } from './utils.js';
-import { RxTodoDocument } from './todo.schema.js';
-
+import './style.css';
 
 async function start() {
-    console.log('# START');
-    const database = await getDatabase();
+    const database = await databasePromise;
     await addEventHandlers();
+    await updateDisplayUrl();
 
     // render reactive todo list
     const $todoList = ensureNotFalsy(document.getElementById('todo-list'));
@@ -29,7 +29,7 @@ async function start() {
 
 
 async function addEventHandlers() {
-    const database = await getDatabase();
+    const database = await databasePromise;
 
     // add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
@@ -61,6 +61,8 @@ async function addEventHandlers() {
 
 
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
+    const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
+
     const $liElement = document.createElement('li');
     $liElement.setAttribute('data-id', todo.id);
 
@@ -98,6 +100,10 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     }
 
     return $liElement;
+}
+
+function updateDisplayUrl() {
+    ensureNotFalsy(document.getElementById('copy-url')).innerHTML = window.location.href;
 }
 
 
