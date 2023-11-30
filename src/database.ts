@@ -14,37 +14,29 @@ import {
 import {
     wrappedValidateAjvStorage
 } from 'rxdb/plugins/validate-ajv';
-import { getRoomId } from './room.js';
-import { TodoDocType, todoSchema } from './schemas/todo.schema.js';
-
-
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 addRxPlugin(RxDBDevModePlugin);
+import { getRoomId } from './room.js';
+import { TodoDocType, todoSchema } from './todo.schema.js';
+import { add as addUnload } from 'unload';
 
 let dbPromise = (async () => {
     const roomId = getRoomId();
     const roomHash = await defaultHashSha256(roomId);
-
-    console.log('... 1');
-
     const database = await createRxDatabase<{
         todos: RxCollection<TodoDocType, {}>
     }>({
-        name: 'mydb-' + roomHash,
+        name: 'mydb-' + roomHash.substring(0, 10),
         storage: wrappedValidateAjvStorage({
             storage: getRxStorageDexie()
-        }),
-        multiInstance: true
+        })
     });
-    console.log('... 2');
 
     await database.addCollections({
         todos: {
             schema: todoSchema
         }
     });
-    console.log('... 3');
-
 
     // start p2p replication for all collections
     Object.values(database.collections).forEach(async (collection) => {
@@ -53,20 +45,26 @@ let dbPromise = (async () => {
             collection,
             connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
             topic: topic,
-            secret: 'lol'
+            secret: 'lol',
+            pull: {},
+            push: {}
         });
         replicatioState.error$.subscribe((err: any) => {
             console.log('replication error:');
             console.dir(err);
         });
+        replicatioState.peerStates$.subscribe(s => {
+            console.log('new peer states:');
+            console.dir(s);
+        });
+        addUnload(() => replicatioState.cancel());
     })
 
-    console.log('... 4');
     return database;
 })();
 
 
 
-export async function getDatabase() {
+export function getDatabase() {
     return dbPromise;
 }

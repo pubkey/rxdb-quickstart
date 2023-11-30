@@ -6,7 +6,7 @@ import { getDatabase } from './database.js';
 
 import "./style.css";
 import { escapeForHTML } from './utils.js';
-import { RxTodoDocument } from './schemas/todo.schema.js';
+import { RxTodoDocument } from './todo.schema.js';
 
 
 async function start() {
@@ -14,8 +14,7 @@ async function start() {
     const database = await getDatabase();
     await addEventHandlers();
 
-
-    // render todo list
+    // render reactive todo list
     const $todoList = ensureNotFalsy(document.getElementById('todo-list'));
     database.todos.find({
         sort: [
@@ -61,8 +60,7 @@ async function addEventHandlers() {
 }
 
 
-function getHtmlByTodo(todo: RxTodoDocument) {
-
+function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     const $liElement = document.createElement('li');
     $liElement.setAttribute('data-id', todo.id);
 
