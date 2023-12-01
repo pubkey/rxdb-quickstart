@@ -9,8 +9,16 @@
 code {
     display: block;
     padding: 15px;
-}
 
+
+    /**
+     * https://css-tricks.com/better-line-breaks-for-long-urls/
+     */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
 
 a {
     color: #b83f45;
@@ -21,8 +29,6 @@ a {
 a:visited {
     color: #b83f45;
 }
-
-
 
 
 /**

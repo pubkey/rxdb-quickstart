@@ -74,6 +74,21 @@ export const databasePromise = (async () => {
         d.lastChange = Date.now();
         return d;
     }, true);
+
+    // for the lulz
+    await database.todos.bulkInsert(
+        [
+            'touch your 👃 with your 👅',
+            'solve a rubik\'s cube 🎲 blindfolded',
+            'invent new 🍔'
+        ].map((name, idx) => ({
+            id: 'todo-' + idx,
+            name,
+            lastChange: Date.now(),
+            state: 'open'
+        }))
+    );
+
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
