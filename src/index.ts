@@ -29,9 +29,9 @@ import './style.css';
     // event: add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
     $insertInput.onkeydown = async (event) => {
-        alert('event code: ' + event.code);
+        alert('event code: ' + event.code + ' kleycode ' + event.keyCode);
         if (
-            event.code === 'Enter' &&
+            isEnterEvent(event) &&
             $insertInput.value.length > 0
         ) {
             await database.todos.insert({
@@ -50,6 +50,7 @@ import './style.css';
 })();
 
 const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
+const isEnterEvent = (ev: KeyboardEvent) => ev.code === 'Enter' || ev.keyCode === 13;
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     const $liElement = document.createElement('li');
     const $viewDiv = document.createElement('div');
@@ -69,7 +70,7 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     // event: change todo name
     $label.contentEditable = 'true';
     $label.onkeyup = async (ev) => {
-        if (ev.code === 'Enter') {
+        if (isEnterEvent(ev)) {
             const newName = $label.innerHTML.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
             await todo.incrementalPatch({ name: newName });
         }
