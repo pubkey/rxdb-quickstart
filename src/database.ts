@@ -79,7 +79,7 @@ export const databasePromise = (async () => {
     await database.todos.bulkInsert(
         [
             'touch your 👃 with your 👅',
-            'solve a rubik\'s cube 🎲 blindfolded',
+            'solve rubik\'s cube 🎲 blindfolded',
             'invent new 🍔'
         ].map((name, idx) => ({
             id: 'todo-' + idx,
