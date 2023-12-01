@@ -66,10 +66,7 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     $viewDiv.append($deleteButton);
 
     // event: toggle todo state
-    $checkbox.onclick = () => todo.incrementalPatch({
-        state: todo.state === 'done' ? 'open' : 'done',
-        lastChange: Date.now()
-    });
+    $checkbox.onclick = () => todo.incrementalPatch({ state: todo.state === 'done' ? 'open' : 'done' });
     $checkbox.type = 'checkbox';
     $checkbox.classList.add('toggle');
 
@@ -78,7 +75,7 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     $label.onkeyup = async (ev) => {
         if (ev.code === 'Enter') {
             const newName = $label.innerHTML.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
-            await todo.incrementalPatch({ name: newName, lastChange: Date.now() });
+            await todo.incrementalPatch({ name: newName });
         }
     }
     $label.innerHTML = escapeForHTML(todo.name);

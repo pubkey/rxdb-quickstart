@@ -29,7 +29,7 @@ export type RxTodoDocument = RxDocument<TodoDocType>;
 export const databasePromise = (async () => {
     const roomId = window.location.hash;
     if (!roomId || roomId.length < 5) {
-        window.location.hash = randomCouchString(12);
+        window.location.hash = 'room-'+randomCouchString(10);
         window.location.reload();
     }
     const roomHash = await defaultHashSha256(roomId);
@@ -78,6 +78,11 @@ export const databasePromise = (async () => {
             }
         }
     });
+    database.todos.preSave(d => {
+        d.lastChange = Date.now();
+        return d;
+    }, true);
+
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),

@@ -11,28 +11,42 @@
 
 <body>
 
-    <span id="forkongithub"><a
+    <span id="forkongithub">
+        <a
             href="https://github.com/pubkey/rxdb-quickstart"
             target="_blank"
-        >Fork me on GitHub</a></span>
+        >Fork me on GitHub</a>
+    </span>
 
     <section class="todoapp">
         <header class="header">
             <h1>p2p todos</h1>
             <p class="description">
-                This is a local first todo app that stores data locally with <a
-                    href="https://rxdb.info/quickstart.html"
+                This is a <a
+                    href="https://rxdb.info/offline-first.html"
+                    target="_blank"
+                >local first</a> todo app that stores data locally with <a
+                    href="https://rxdb.info/"
                     target="_blank"
                 >RxDB</a> and
                 replicates it <a
                     href="https://rxdb.info/replication-p2p.html"
                     target="_blank"
                 >P2P with WebRTC</a> to other devices without sending
-                the data
-                throught any central server.
+                the data throught any central server.
 
                 Open this url in another browser/device/tab to test the replication: <br />
                 <code id="copy-url"></code>
+                <br />
+                The whole app is implemented without a framework in about 200 lines of TypeScript code.
+                To learn more about how it works, I recommend looking a the <a
+                    href="https://github.com/pubkey/rxdb-quickstart/blob/master/src/index.ts"
+                    target="_blank"
+                >source code</a> and read the <a
+                    href="https://rxdb.info/quickstart.html"
+                    target="_blank"
+                >RxDB Quickstart Guide</a>.
+
             </p>
             <hr>
             <input
