@@ -5,26 +5,13 @@ import {
     addRxPlugin,
     randomCouchString,
     RxDocument,
-    RxStorage
+    RxJsonSchema
 } from 'rxdb/plugins/core';
-import {
-    getRxStorageDexie
-} from 'rxdb/plugins/storage-dexie';
-import {
-    replicateWebRTC,
-    getConnectionHandlerSimplePeer
-} from 'rxdb/plugins/replication-webrtc';
-
-let storage: RxStorage<any, any> = getRxStorageDexie();
-
-
-// Comment in for development
-// storage = wrappedValidateAjvStorage({ storage });
-// import {
-//     wrappedValidateAjvStorage
-// } from 'rxdb/plugins/validate-ajv';
-// import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-// addRxPlugin(RxDBDevModePlugin);
+import { replicateWebRTC, getConnectionHandlerSimplePeer } from 'rxdb/plugins/replication-webrtc';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+addRxPlugin(RxDBDevModePlugin);
 
 export type TodoDocType = {
     id: string;
@@ -44,7 +31,7 @@ export const databasePromise = (async () => {
         todos: RxCollection<TodoDocType, {}>
     }>({
         name: 'mydb-' + roomHash.substring(0, 10),
-        storage
+        storage: wrappedValidateAjvStorage({ storage: getRxStorageDexie() })
     });
     await database.addCollections({
         todos: {
@@ -80,14 +67,13 @@ export const databasePromise = (async () => {
                     'state',
                     ['state', 'lastChange']
                 ]
-            }
+            } as RxJsonSchema<TodoDocType>
         }
     });
     database.todos.preSave(d => {
         d.lastChange = Date.now();
         return d;
     }, true);
-
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
