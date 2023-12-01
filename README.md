@@ -4,7 +4,11 @@ This is a [local first](https://rxdb.info/offline-first.html) todo app that stor
 
 The whole app is implemented without a framework in about 200 lines of TypeScript code. To learn more about how it works, I recommend looking a the [source code](./src//index.ts) and read the [RxDB Quickstart Guide](https://rxdb.info/quickstart.html).
 
-Start the app locally (requires Node.js v20 installed):
+### Try live demo
+
+The app is deployed with github pages at [https://pubkey.github.io/rxdb-quickstart/](https://pubkey.github.io/rxdb-quickstart/).
+
+### Start the app locally (requires Node.js v20 installed):
 
 - Fork&Clone the repository.
 - Run `npm install` to install the npm dependencies.

@@ -29,6 +29,7 @@ import './style.css';
     // event: add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
     $insertInput.onkeydown = async (event) => {
+        alert('event code: ' + event.code);
         if (
             event.code === 'Enter' &&
             $insertInput.value.length > 0
@@ -45,11 +46,7 @@ import './style.css';
 
     // event: clear completed
     const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed'));
-    $clearCompletedButton.onclick = () => database.todos.find({
-        selector: {
-            state: 'done'
-        }
-    }).remove();
+    $clearCompletedButton.onclick = () => database.todos.find({ selector: { state: 'done' } }).remove();
 })();
 
 const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
