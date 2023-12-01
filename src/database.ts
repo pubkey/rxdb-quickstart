@@ -4,7 +4,8 @@ import {
     defaultHashSha256,
     addRxPlugin,
     randomCouchString,
-    RxDocument
+    RxDocument,
+    RxStorage
 } from 'rxdb/plugins/core';
 import {
     getRxStorageDexie
@@ -13,11 +14,17 @@ import {
     replicateWebRTC,
     getConnectionHandlerSimplePeer
 } from 'rxdb/plugins/replication-webrtc';
-import {
-    wrappedValidateAjvStorage
-} from 'rxdb/plugins/validate-ajv';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-addRxPlugin(RxDBDevModePlugin);
+
+let storage: RxStorage<any, any> = getRxStorageDexie();
+
+
+// Comment in for development
+// storage = wrappedValidateAjvStorage({ storage });
+// import {
+//     wrappedValidateAjvStorage
+// } from 'rxdb/plugins/validate-ajv';
+// import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+// addRxPlugin(RxDBDevModePlugin);
 
 export type TodoDocType = {
     id: string;
@@ -29,7 +36,7 @@ export type RxTodoDocument = RxDocument<TodoDocType>;
 export const databasePromise = (async () => {
     const roomId = window.location.hash;
     if (!roomId || roomId.length < 5) {
-        window.location.hash = 'room-'+randomCouchString(10);
+        window.location.hash = 'room-' + randomCouchString(10);
         window.location.reload();
     }
     const roomHash = await defaultHashSha256(roomId);
@@ -37,9 +44,7 @@ export const databasePromise = (async () => {
         todos: RxCollection<TodoDocType, {}>
     }>({
         name: 'mydb-' + roomHash.substring(0, 10),
-        storage: wrappedValidateAjvStorage({
-            storage: getRxStorageDexie()
-        })
+        storage
     });
     await database.addCollections({
         todos: {

@@ -52,9 +52,8 @@ import './style.css';
     }).remove();
 })();
 
+const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
-    const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
-
     const $liElement = document.createElement('li');
     const $viewDiv = document.createElement('div');
     const $checkbox = document.createElement('input');
