@@ -29,7 +29,6 @@ import './style.css';
     // event: add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
     $insertInput.onkeydown = async (event) => {
-        alert('event code: ' + event.code + ' kleycode ' + event.keyCode);
         if (
             isEnterEvent(event) &&
             $insertInput.value.length > 0
@@ -71,7 +70,8 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
     $label.contentEditable = 'true';
     $label.onkeyup = async (ev) => {
         if (isEnterEvent(ev)) {
-            const newName = $label.innerHTML.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
+            let newName = $label.innerText || $label.textContent as string;
+            newName = newName.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
             await todo.incrementalPatch({ name: newName });
         }
     }
