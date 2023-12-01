@@ -28,20 +28,20 @@ import './style.css';
 
     // event: add todo
     const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
+    const addTodo = async () => {
+        if ($insertInput.value.length < 1) { return; }
+        await database.todos.insert({
+            id: randomCouchString(10),
+            name: $insertInput.value,
+            state: 'open',
+            lastChange: Date.now()
+        });
+        $insertInput.value = '';
+    };
     $insertInput.onkeydown = async (event) => {
-        if (
-            isEnterEvent(event) &&
-            $insertInput.value.length > 0
-        ) {
-            await database.todos.insert({
-                id: randomCouchString(10),
-                name: $insertInput.value,
-                state: 'open',
-                lastChange: Date.now()
-            });
-            $insertInput.value = '';
-        }
+        if (isEnterEvent(event)) { addTodo(); }
     }
+    $insertInput.onblur = () => addTodo();
 
     // event: clear completed
     const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed'));
