@@ -5,7 +5,9 @@ import {
     addRxPlugin,
     randomCouchString,
     RxDocument,
-    RxJsonSchema
+    RxJsonSchema,
+    deepEqual,
+    RxConflictHandler
 } from 'rxdb/plugins/core';
 import { replicateWebRTC, getConnectionHandlerSimplePeer } from 'rxdb/plugins/replication-webrtc';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
@@ -30,9 +32,30 @@ export const databasePromise = (async () => {
     const database = await createRxDatabase<{
         todos: RxCollection<TodoDocType, {}>
     }>({
-        name: 'mydb-' + roomHash.substring(0, 10),
+        name: 'tododb-' + roomHash.substring(0, 10),
         storage: wrappedValidateAjvStorage({ storage: getRxStorageDexie() })
     });
+
+    // handle replication conflicts (keep the document with the newest timestamp)
+    const conflictHandler: RxConflictHandler<TodoDocType> = async (input) => {
+        if (deepEqual(
+            input.newDocumentState,
+            input.realMasterState
+        )) {
+            return { isEqual: true };
+        }
+        if (input.newDocumentState.lastChange > input.realMasterState.lastChange) {
+            return {
+                documentData: input.newDocumentState,
+                isEqual: false
+            };
+        } else {
+            return {
+                documentData: input.realMasterState,
+                isEqual: false
+            }
+        }
+    };
     await database.addCollections({
         todos: {
             schema: {
@@ -57,7 +80,7 @@ export const databasePromise = (async () => {
                     },
                     lastChange: {
                         type: 'number',
-                        minimum: 1701307494132,
+                        minimum: 0,
                         maximum: 2701307494132,
                         multipleOf: 1
                     }
@@ -67,15 +90,14 @@ export const databasePromise = (async () => {
                     'state',
                     ['state', 'lastChange']
                 ]
-            } as RxJsonSchema<TodoDocType>
+            } as RxJsonSchema<TodoDocType>,
+            conflictHandler
         }
     });
     database.todos.preSave(d => {
         d.lastChange = Date.now();
         return d;
     }, true);
-
-    // for the lulz
     await database.todos.bulkInsert(
         [
             'touch your 👃 with your 👅',
@@ -84,10 +106,11 @@ export const databasePromise = (async () => {
         ].map((name, idx) => ({
             id: 'todo-' + idx,
             name,
-            lastChange: Date.now(),
+            lastChange: 0,
             state: 'open'
         }))
     );
+
 
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
@@ -95,7 +118,7 @@ export const databasePromise = (async () => {
         topic: roomHash.substring(0, 10),
         secret: 'lol',
         pull: {},
-        push: {}
+        push: {},
     }).then(replicationState => {
         replicationState.error$.subscribe((err: any) => {
             console.log('replication error:');
