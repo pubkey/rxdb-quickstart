@@ -105,8 +105,6 @@ export const databasePromise = (async () => {
             state: 'open'
         }))
     );
-
-
     replicateWebRTC<TodoDocType>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),

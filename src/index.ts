@@ -12,10 +12,10 @@ import './style.css';
     const database = await databasePromise;
 
     // update url in description text
-    ensureNotFalsy(document.getElementById('copy-url')).innerHTML = window.location.href;
+    getById('copy-url').innerHTML = window.location.href;
 
     // render reactive todo list
-    const $todoList = ensureNotFalsy(document.getElementById('todo-list'));
+    const $todoList = getById('todo-list');
     database.todos.find({
         sort: [
             { state: 'desc' },
@@ -27,7 +27,7 @@ import './style.css';
     });
 
     // event: add todo
-    const $insertInput = ensureNotFalsy(document.getElementById('insert-todo')) as HTMLInputElement;
+    const $insertInput = getById<HTMLInputElement>('insert-todo');
     const addTodo = async () => {
         if ($insertInput.value.length < 1) { return; }
         await database.todos.insert({
@@ -44,10 +44,10 @@ import './style.css';
     $insertInput.onblur = () => addTodo();
 
     // event: clear completed
-    const $clearCompletedButton = ensureNotFalsy(document.getElementById('clear-completed'));
-    $clearCompletedButton.onclick = () => database.todos.find({ selector: { state: 'done' } }).remove();
+    getById('clear-completed').onclick = () => database.todos.find({ selector: { state: 'done' } }).remove();
 })();
 
+function getById<T = HTMLElement>(id: string): T { return ensureNotFalsy(document.getElementById(id)) as any; }
 const escapeForHTML = (s: string) => s.replace(/[&<]/g, c => c === '&' ? '&amp;' : '&lt;');
 const isEnterEvent = (ev: KeyboardEvent) => ev.code === 'Enter' || ev.keyCode === 13;
 function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
@@ -68,11 +68,17 @@ function getHtmlByTodo(todo: RxTodoDocument): HTMLLIElement {
 
     // event: change todo name
     $label.contentEditable = 'true';
+    const updateName = async () => {
+        let newName = $label.innerText || $label.textContent as string;
+        newName = newName.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
+        if (newName !== todo.name) {
+            await todo.incrementalPatch({ name: newName });
+        }
+    }
+    $label.onblur = () => updateName();
     $label.onkeyup = async (ev) => {
         if (isEnterEvent(ev)) {
-            let newName = $label.innerText || $label.textContent as string;
-            newName = newName.replace(/<br>/g, '').replace(/\&nbsp;/g, ' ').trim();
-            await todo.incrementalPatch({ name: newName });
+            updateName();
         }
     }
     $label.innerHTML = escapeForHTML(todo.name);
