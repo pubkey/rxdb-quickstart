@@ -44,17 +44,12 @@ export const databasePromise = (async () => {
         )) {
             return { isEqual: true };
         }
-        if (input.newDocumentState.lastChange > input.realMasterState.lastChange) {
-            return {
-                documentData: input.newDocumentState,
-                isEqual: false
-            };
-        } else {
-            return {
-                documentData: input.realMasterState,
-                isEqual: false
-            }
-        }
+        return {
+            isEqual: false,
+            documentData: input.newDocumentState.lastChange > input.realMasterState.lastChange
+                ? input.newDocumentState
+                : input.realMasterState
+        };
     };
     await database.addCollections({
         todos: {
