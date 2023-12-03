@@ -2,7 +2,7 @@
 
 This is a [local first](https://rxdb.info/offline-first.html) todo app that stores data locally with [RxDB](https://rxdb.info/) and replicates it [P2P with WebRTC](https://rxdb.info/replication-p2p.html) to other devices without sending the data throught any central server.
 
-The whole app is implemented without a framework in about 200 lines of TypeScript code. To learn more about how it works, I recommend looking a the [source code](./src//index.ts) and read the [RxDB Quickstart Guide](https://rxdb.info/quickstart.html).
+The whole app is implemented without a framework in about 200 lines of TypeScript code. To learn more about how it works, I recommend looking at the [source code](./src/index.ts) and read the [RxDB Quickstart Guide](https://rxdb.info/quickstart.html).
 
 ### Try live demo
 
