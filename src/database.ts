@@ -9,7 +9,7 @@ import {
     deepEqual,
     RxConflictHandler
 } from 'rxdb/plugins/core';
-import { replicateWebRTC, getConnectionHandlerSimplePeer } from 'rxdb/plugins/replication-webrtc';
+import { replicateWebRTC, getConnectionHandlerSimplePeer, SimplePeer } from 'rxdb/plugins/replication-webrtc';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
@@ -105,11 +105,10 @@ export const databasePromise = (async () => {
             state: 'open'
         }))
     );
-    replicateWebRTC<TodoDocType>({
+    replicateWebRTC<TodoDocType, SimplePeer>({
         collection: database.todos,
         connectionHandlerCreator: getConnectionHandlerSimplePeer({}),
         topic: roomHash.substring(0, 10),
-        secret: 'lol',
         pull: {},
         push: {},
     }).then(replicationState => {
