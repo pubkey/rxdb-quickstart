@@ -7,7 +7,8 @@ import {
     RxDocument,
     RxJsonSchema,
     deepEqual,
-    RxConflictHandler
+    RxConflictHandler,
+    RXDB_VERSION
 } from 'rxdb/plugins/core';
 import { replicateWebRTC, getConnectionHandlerSimplePeer, SimplePeer } from 'rxdb/plugins/replication-webrtc';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
@@ -32,7 +33,7 @@ export const databasePromise = (async () => {
     const database = await createRxDatabase<{
         todos: RxCollection<TodoDocType, {}>
     }>({
-        name: 'tododb-' + roomHash.substring(0, 10),
+        name: 'tpdp-' + RXDB_VERSION.replace(/\./g, '-') + '-' + roomHash.substring(0, 10),
         storage: wrappedValidateAjvStorage({ storage: getRxStorageDexie() })
     });
 
