@@ -20,6 +20,9 @@ if (process.env.NODE_ENV === 'disc') {
     mode = 'production';
     plugins.push(new BundleAnalyzerPlugin());
 }
+if (process.argv.join(',').includes('mode=production')) {
+    mode = 'production';
+}
 
 plugins.push(new webpack.DefinePlugin({ mode: JSON.stringify(mode) }));
 
