@@ -8,13 +8,11 @@ import {
     RxJsonSchema,
     deepEqual,
     RxConflictHandler,
-    RXDB_VERSION
+    RXDB_VERSION,
+    RxStorage
 } from 'rxdb/plugins/core';
 import { replicateWebRTC, getConnectionHandlerSimplePeer, SimplePeer } from 'rxdb/plugins/replication-webrtc';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-addRxPlugin(RxDBDevModePlugin);
 
 export type TodoDocType = {
     id: string;
@@ -23,7 +21,27 @@ export type TodoDocType = {
     lastChange: number;
 }
 export type RxTodoDocument = RxDocument<TodoDocType>;
+
+// set by webpack as global
+declare var mode: 'production' | 'development';
+console.log('mode: ' + mode);
+
+let storage: RxStorage<any, any> = getRxStorageDexie();
+
 export const databasePromise = (async () => {
+    // import dev-mode plugins
+    if (mode === 'development') {
+        await import('rxdb/plugins/dev-mode').then(
+            module => addRxPlugin(module.RxDBDevModePlugin)
+        );
+        await import('rxdb/plugins/validate-ajv').then(
+            module => {
+                storage = module.wrappedValidateAjvStorage({ storage });
+            }
+        );
+    }
+
+    // ensure roomId exists
     const roomId = window.location.hash;
     if (!roomId || roomId.length < 5) {
         window.location.hash = 'room-' + randomCouchString(10);
@@ -34,7 +52,7 @@ export const databasePromise = (async () => {
         todos: RxCollection<TodoDocType, {}>
     }>({
         name: 'tpdp-' + RXDB_VERSION.replace(/\./g, '-') + '-' + roomHash.substring(0, 10),
-        storage: wrappedValidateAjvStorage({ storage: getRxStorageDexie() })
+        storage
     });
 
     // handle replication conflicts (keep the document with the newest timestamp)

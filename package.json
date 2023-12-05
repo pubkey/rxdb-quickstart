@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack serve",
     "build": "rimraf -rf ./docs && webpack --mode=production",
+    "disc": "cross-env NODE_ENV=disc webpack --config ./webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,6 +33,7 @@
     "@types/webpack": "5.28.5",
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "11.0.0",
+    "cross-env": "7.0.3",
     "css-loader": "6.8.1",
     "declaration-bundler-webpack-plugin": "1.0.3",
     "html-webpack-plugin": "5.5.3",
@@ -40,6 +42,7 @@
     "ts-loader": "9.5.1",
     "typescript": "5.3.2",
     "webpack": "5.89.0",
+    "webpack-bundle-analyzer": "4.10.1",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "4.15.1"
   }

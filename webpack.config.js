@@ -1,11 +1,32 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+
+let mode = 'development';
+const plugins = [
+    new webpack.ProvidePlugin({
+        process: 'process/browser',
+    }),
+    new HtmlWebpackPlugin({
+        template: 'src/index.html'
+    }),
+    new MiniCssExtractPlugin({ filename: 'src/style.css' }),
+];
+if (process.env.NODE_ENV === 'disc') {
+    mode = 'production';
+    plugins.push(new BundleAnalyzerPlugin());
+}
+
+plugins.push(new webpack.DefinePlugin({ mode: JSON.stringify(mode) }));
+
 module.exports = {
     entry: './src/index.ts',
     devtool: 'source-map',
-    mode: 'development',
+    mode,
     module: {
         rules: [
             {
@@ -19,6 +40,12 @@ module.exports = {
             },
         ],
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin()
+        ]
+    },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
@@ -31,13 +58,5 @@ module.exports = {
             '.js': ['.js', '.ts'],
         }
     },
-    plugins: [
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-        }),
-        new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        }),
-        new MiniCssExtractPlugin({ filename: 'src/style.css' })
-    ]
+    plugins
 };
