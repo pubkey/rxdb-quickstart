@@ -41,6 +41,15 @@ module.exports = {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
+            /**
+             * @link https://github.com/react-dnd/react-dnd/issues/3425#issuecomment-1177329608
+             */
+            {
+                test: /\.m?js$/,
+                resolve: {
+                    fullySpecified: false
+                },
+            },
         ],
     },
     optimization: {
