@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/pubkey/rxdb-quickstart#readme",
   "dependencies": {
-    "rxdb": "15.15.1",
+    "rxdb": "15.16.0",
     "rxjs": "7.8.1",
     "todomvc-app-css": "2.4.3"
   },
