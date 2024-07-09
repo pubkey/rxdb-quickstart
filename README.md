@@ -1,6 +1,6 @@
 # Local-First peer-to-peer replicated todo list with RxDB and WebRTC
 
-This is a [local first](https://rxdb.info/offline-first.html) todo app that stores data locally with [RxDB](https://rxdb.info/) and replicates it [peer-to-peer with WebRTC](https://rxdb.info/replication-p2p.html) to other devices without sending the data throught any central server.
+This is a [local first](https://rxdb.info/offline-first.html) todo app that stores data locally with [RxDB](https://rxdb.info/) and replicates it [peer-to-peer with WebRTC](https://rxdb.info/replication-p2p.html) to other devices without sending the data throught any central server. Note that there is still a server involved (a signalling server) to establish the connection between the peers, which defaults to `signaling.rxdb.info`.
 
 The whole app is implemented without a framework in about 200 lines of TypeScript code. To learn more about how it works, I recommend looking at the [source code](./src/index.ts) and read the [Quickstart Guide](https://rxdb.info/quickstart.html).
 
