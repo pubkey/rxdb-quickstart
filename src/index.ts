@@ -1,6 +1,6 @@
 import {
     ensureNotFalsy,
-    randomCouchString
+    randomToken
 } from 'rxdb/plugins/core';
 import {
     RxTodoDocument,
@@ -31,7 +31,7 @@ import './style.css';
     const addTodo = async () => {
         if ($insertInput.value.length < 1) { return; }
         await database.todos.insert({
-            id: randomCouchString(10),
+            id: randomToken(10),
             name: $insertInput.value,
             state: 'open',
             lastChange: Date.now()

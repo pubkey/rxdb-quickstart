@@ -3,7 +3,7 @@ import {
     createRxDatabase,
     defaultHashSha256,
     addRxPlugin,
-    randomCouchString,
+    randomToken,
     RxDocument,
     RxJsonSchema,
     deepEqual,
@@ -44,7 +44,7 @@ export const databasePromise = (async () => {
     // ensure roomId exists
     const roomId = window.location.hash;
     if (!roomId || roomId.length < 5) {
-        window.location.hash = 'room-' + randomCouchString(10);
+        window.location.hash = 'room-' + randomToken(10);
         window.location.reload();
     }
     const roomHash = await defaultHashSha256(roomId);
@@ -56,19 +56,19 @@ export const databasePromise = (async () => {
     });
 
     // handle replication conflicts (keep the document with the newest timestamp)
-    const conflictHandler: RxConflictHandler<TodoDocType> = async (input) => {
-        if (deepEqual(
-            input.newDocumentState,
-            input.realMasterState
-        )) {
-            return { isEqual: true };
-        }
-        return {
-            isEqual: false,
-            documentData: input.newDocumentState.lastChange > input.realMasterState.lastChange
+    const conflictHandler: RxConflictHandler<TodoDocType> = {
+        isEqual(a, b) {
+            return deepEqual(
+                a,
+                b
+            );
+        },
+        resolve(input) {
+            const ret = input.newDocumentState.lastChange > input.realMasterState.lastChange
                 ? input.newDocumentState
-                : input.realMasterState
-        };
+                : input.realMasterState;
+            return Promise.resolve(ret);
+        }
     };
     await database.addCollections({
         todos: {
