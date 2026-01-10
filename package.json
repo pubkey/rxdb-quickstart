@@ -28,7 +28,7 @@
     "todomvc-app-css": "2.4.3"
   },
   "devDependencies": {
-    "@types/node": "24.10.4",
+    "@types/node": "24.10.6",
     "@types/webpack": "5.28.5",
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "13.0.1",
