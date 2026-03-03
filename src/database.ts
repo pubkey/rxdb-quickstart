@@ -13,6 +13,8 @@ import {
 } from 'rxdb/plugins/core';
 import { replicateWebRTC, getConnectionHandlerSimplePeer, SimplePeer } from 'rxdb/plugins/replication-webrtc';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { RxDBWebMCPPlugin } from 'rxdb/plugins/webmcp';
+addRxPlugin(RxDBWebMCPPlugin);
 
 export type TodoDocType = {
     id: string;
@@ -140,5 +142,7 @@ export const databasePromise = (async () => {
             console.dir(s);
         });
     });
+    // TODO: remove cast once RxDBWebMCPPlugin provides TypeScript type augmentation for RxDatabase
+    (database as any).registerWebMCP();
     return database;
 })();
