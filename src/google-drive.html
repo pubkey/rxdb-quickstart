@@ -6,7 +6,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>RxDB Quickstart - WebRTC Sync</title>
+    <title>RxDB Quickstart - Google Drive Sync</title>
 </head>
 
 <body>
@@ -20,14 +20,14 @@
 
     <nav class="sync-nav">
         <span class="sync-nav-label">Sync method:</span>
-        <a href="index.html" class="sync-nav-link active">WebRTC</a>
-        <a href="google-drive.html" class="sync-nav-link">Google Drive</a>
+        <a href="index.html" class="sync-nav-link">WebRTC</a>
+        <a href="google-drive.html" class="sync-nav-link active">Google Drive</a>
         <a href="onedrive.html" class="sync-nav-link">OneDrive</a>
     </nav>
 
     <section class="todoapp">
         <header class="header">
-            <h1>p2p todos</h1>
+            <h1>Google Drive todos</h1>
             <p class="description">
                 This is a <a
                     href="https://rxdb.info/offline-first.html"
@@ -36,25 +36,17 @@
                     href="https://rxdb.info/"
                     target="_blank"
                 >RxDB</a> and
-                replicates it <a
-                    href="https://rxdb.info/replication-p2p.html"
+                replicates it to <a
+                    href="https://rxdb.info/replication-google-drive.html"
                     target="_blank"
-                >peer-to-peer with WebRTC</a> to other devices without sending
-                the data through any central server.
-
-                Open this url in another browser/device/tab to test the replication: <br />
-                <code id="copy-url"></code>
-                <br />
-                The whole app is implemented without a framework in about 200 lines of TypeScript code.
-                To learn more about how it works, I recommend looking at the <a
-                    href="https://github.com/pubkey/rxdb-quickstart/blob/master/src/index.ts"
-                    target="_blank"
-                >source code</a> and read the <a
-                    href="https://rxdb.info/quickstart.html"
-                    target="_blank"
-                >RxDB Quickstart Guide</a>.
-
+                >Google Drive</a> so your data syncs across all your devices.
             </p>
+            <div class="cloud-login">
+                <button id="google-login-btn" class="login-btn login-btn-google">
+                    Sign in with Google
+                </button>
+                <span id="login-status" class="login-status">Not connected</span>
+            </div>
             <hr>
             <input
                 id="insert-todo"
