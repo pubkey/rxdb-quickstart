@@ -12,7 +12,19 @@ const plugins = [
         process: 'process/browser',
     }),
     new HtmlWebpackPlugin({
-        template: 'src/index.html'
+        template: 'src/index.html',
+        filename: 'index.html',
+        chunks: ['webrtc']
+    }),
+    new HtmlWebpackPlugin({
+        template: 'src/google-drive.html',
+        filename: 'google-drive.html',
+        chunks: ['google-drive']
+    }),
+    new HtmlWebpackPlugin({
+        template: 'src/onedrive.html',
+        filename: 'onedrive.html',
+        chunks: ['onedrive']
     }),
     new MiniCssExtractPlugin({ filename: 'src/style.css' }),
 ];
@@ -27,7 +39,11 @@ if (process.argv.join(',').includes('mode=production')) {
 plugins.push(new webpack.DefinePlugin({ mode: JSON.stringify(mode) }));
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: {
+        'webrtc': './src/index.ts',
+        'google-drive': './src/google-drive.ts',
+        'onedrive': './src/onedrive.ts'
+    },
     devtool: 'source-map',
     mode,
     module: {
@@ -62,7 +78,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: '[contenthash].bundle.js',
+        filename: '[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'docs'),
     },
     resolve: {

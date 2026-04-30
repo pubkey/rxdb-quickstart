@@ -1,5 +1,88 @@
 @import '~todomvc-app-css/index.css';
 
+/* Sync method navigation header */
+.sync-nav {
+    max-width: 550px;
+    margin: 10px auto;
+    padding: 10px 15px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.sync-nav-label {
+    color: #777;
+    margin-right: 4px;
+}
+
+.sync-nav-link {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #555;
+    font-weight: normal;
+    border: 1px solid #ddd;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.sync-nav-link:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.sync-nav-link.active {
+    background: #b83f45;
+    color: #fff;
+    border-color: #b83f45;
+    font-weight: bold;
+}
+
+.sync-nav-link.active:hover {
+    background: #a33439;
+}
+
+/* Cloud login section */
+.cloud-login {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    transition: opacity 0.2s;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+.login-btn-google {
+    background: #4285F4;
+}
+
+.login-btn-onedrive {
+    background: #0078D4;
+}
+
+.login-status {
+    font-size: 13px;
+    color: #999;
+}
+
 .description {
     padding: 15px;
     margin-bottom: 10px;
